@@ -97,76 +97,9 @@ Brothers and sisters, on this blessed day of Eid,
   static const salaamGreetingTemplate = Template(
     id: 'salaam_greeting',
     name: 'Assalamo Alaykum - Spreading Peace',
-    description: 'Comprehensive khutbah about the importance and rewards of the Islamic greeting',
+    description: 'Comprehensive khutbah about the importance and rewards of the Islamic greeting with full HTML formatting',
     type: TemplateType.social,
-    content: '''بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ
-
-الْحَمْدُ لِلَّهِ نَحْمَدُهُ وَنَسْتَعِينُهُ وَنَسْتَغْفِرُهُ، وَنَعُوذُ بِاللَّهِ مِنْ شُرُورِ أَنْفُسِنَا وَمِنْ سَيِّئَاتِ أَعْمَالِنَا
-
-يَا أَيُّهَا الَّذِينَ آمَنُوا اتَّقُوا اللَّهَ حَقَّ تُقَاتِهِ وَلَا تَمُوتُنَّ إِلَّا وَأَنْتُمْ مُسْلِمُونَ
-
-Introduction: The Timeless Sunnah of Salaam
-
-Assalamo alaykum.
-
-Dear Brothers and sisters, we live in a world hungry for connection, troubled by division, and yearning for peace. Yet, Allah ﷻ has given this Ummah a key to healing and unity—a practice that is simple, profound, and life-changing: the greeting of Assalamo alaykum.
-
-This greeting is NOT just words. It is:
-• The DNA of Islam
-• A direct link to paradise
-• A powerful daily Sunnah of our beloved Prophet ﷺ
-
----
-
-The Quranic Command on Salaam
-
-وَإِذَا حُيِّيتُم بِتَحِيَّةٍ فَحَيُّوا بِأَحْسَنَ مِنْهَا أَوْ رُدُّوهَا
-
-"And when you are greeted with a greeting, greet in return with what is better than it or (at least) return it equally." (Quran 4:86)
-
----
-
-The Story of Adam: The First Salaam
-
-The Prophet ﷺ said: "When Allah created Adam, He said: 'Go to those angels and say, As-Salamu alaikum.' They replied, 'Wa Alaika as-Salamu wa Rahmatullah.' Then He said: 'This is your greeting and the greeting of your children among each other.'" (Sahih Bukhari & Muslim)
-
----
-
-Greet Those You Know AND Those You Don't Know
-
-The Messenger of Allah ﷺ was asked: "Which deed in Islam is the best?" He said: "Feeding people and greeting those you know and those you do not know." (Sahih Bukhari & Muslim)
-
----
-
-The Reward for Being FIRST to Give Salaam
-
-The Prophet ﷺ said: "The person nearest to Allah is one who is the first to offer greeting." (Abu Dawud, At-Tirmidhi)
-
-The one who initiates salaam:
-1. Rises above the ego
-2. Conquers shyness
-3. Takes the first step toward connection
-4. Is CLOSEST TO ALLAH!
-
----
-
-Salaam: The Path to Paradise
-
-The Prophet ﷺ said: "You will not enter Paradise until you believe, and you will not believe until you love one another. Shall I not guide you to something which, if you do, you will love one another? Spread Salaam among yourselves." (Sahih Muslim)
-
----
-
-[Break for sitting/jalsah]
-
----
-
-The Chain to Paradise:
-1. Salaam → Leads to Love for each other
-2. Love for each other → Leads to Faith/iman
-3. Faith/iman → Leads to Paradise
-
-الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ
-رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ''',
+    content: '''HTML:assets/templates/AssalamoAlaykumGreeting.html''',
   );
 
   static List<Template> get all => [standardTemplate, eidTemplate, salaamGreetingTemplate];

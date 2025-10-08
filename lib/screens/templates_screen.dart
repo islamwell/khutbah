@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:pulpitflow/models/template.dart';
 import 'package:pulpitflow/models/khutbah.dart';
 import 'package:pulpitflow/screens/rich_editor_screen.dart';
@@ -175,23 +176,65 @@ class TemplatesScreen extends StatelessWidget {
     return previewLines.join('\n');
   }
 
-  void _useTemplate(BuildContext context, Template template) {
-    // Create a Khutbah from template
-    final khutbah = Khutbah(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      title: template.name,
-      content: template.content,
-      tags: [],
-      createdAt: DateTime.now(),
-      modifiedAt: DateTime.now(),
-      estimatedMinutes: 15,
-    );
-    
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => RichEditorScreen(existingKhutbah: khutbah),
-      ),
-    );
+  Future<void> _useTemplate(BuildContext context, Template template) async {
+    // Check if this is an HTML template
+    if (template.content.startsWith('HTML:')) {
+      // Extract the file path
+      final htmlPath = template.content.substring(5);
+      
+      try {
+        // Read the HTML file
+        final htmlFile = await rootBundle.loadString(htmlPath);
+        
+        // Create a Khutbah with HTML content
+        final khutbah = Khutbah(
+          id: DateTime.now().millisecondsSinceEpoch.toString(),
+          title: template.name,
+          content: htmlFile,
+          tags: ['html', 'template'],
+          createdAt: DateTime.now(),
+          modifiedAt: DateTime.now(),
+          estimatedMinutes: 20,
+        );
+        
+        if (context.mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => RichEditorScreen(existingKhutbah: khutbah),
+            ),
+          );
+        }
+      } catch (e) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Failed to load template: $e'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } else {
+      // Create a Khutbah from template (plain text)
+      final khutbah = Khutbah(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        title: template.name,
+        content: template.content,
+        tags: [],
+        createdAt: DateTime.now(),
+        modifiedAt: DateTime.now(),
+        estimatedMinutes: 15,
+      );
+      
+      if (context.mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => RichEditorScreen(existingKhutbah: khutbah),
+          ),
+        );
+      }
+    }
   }
 }

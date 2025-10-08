@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assalamo Alaykum: Building Bridges Through Peace - Modern Khutbah</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+            max-width: 950px;
+            margin: 0 auto;
+            padding: 30px 25px;
+            line-height: 1.8;
+            font-size: 17px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #2d3748;
+            min-height: 100vh;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 2.8em;
+            margin-bottom: 15px;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+        
+        h2 {
+            color: #4a5568;
+            font-size: 1.9em;
+            margin-top: 45px;
+            margin-bottom: 25px;
+            position: relative;
+            padding-left: 20px;
+        }
+        
+        h2::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 30px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+        
+        h3 {
+            color: #2d3748;
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 18px;
+            font-weight: 600;
+        }
+        
+        .opening {
+            background: linear-gradient(135deg, #f7fafc, #edf2f7);
+            padding: 30px;
+            margin: 35px 0;
+            border-radius: 12px;
+            border-left: 6px solid #667eea;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .arabic {
+            font-size: 1.7em;
+            text-align: right;
+            direction: rtl;
+            color: #2d3748;
+            font-weight: 600;
+            margin: 25px 0;
+            line-height: 2.3;
+            background: linear-gradient(135deg, #f0f4f8, #e2e8f0);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .translation {
+            font-style: italic;
+            color: #4a5568;
+            margin: 18px 0;
+            padding: 15px 25px;
+            background: #f8fafc;
+            border-left: 4px solid #cbd5e0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .key-point {
+            background: linear-gradient(135deg, #fffbeb, #fef3c7);
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 12px;
+            border-left: 6px solid #f59e0b;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.1);
+        }
+        
+        .hadith-box {
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 12px;
+            border-left: 6px solid #3b82f6;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+        }
+        
+        .scholar-quote {
+            background: linear-gradient(135deg, #faf5ff, #f3e8ff);
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 12px;
+            border-left: 6px solid #8b5cf6;
+            font-style: italic;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+        }
+        
+        .remember {
+            background: linear-gradient(135deg, #fef2f2, #fee2e2);
+            padding: 30px;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 2px solid #ef4444;
+            font-weight: 600;
+            font-size: 1.1em;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.1);
+        }
+        
+        .action-box {
+            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+            padding: 30px;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 3px solid #22c55e;
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.1);
+        }
+        
+        .reference {
+            color: #6b7280;
+            font-size: 0.9em;
+            font-style: italic;
+            margin-top: 10px;
+        }
+        
+        .pause {
+            text-align: center;
+            font-size: 2.2em;
+            color: #cbd5e0;
+            margin: 35px 0;
+            font-weight: 300;
+        }
+        
+        ul, ol {
+            margin: 25px 0;
+            padding-left: 30px;
+        }
+        
+        li {
+            margin: 18px 0;
+            line-height: 1.7;
+        }
+        
+        strong {
+            color: #1f2937;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #6b7280;
+            font-size: 1.3em;
+            font-style: italic;
+            margin-top: -5px;
+            margin-bottom: 35px;
+            font-weight: 300;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        th, td {
+            border: 1px solid #e5e7eb;
+            padding: 18px;
+            text-align: left;
+        }
+        
+        th {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            font-weight: 600;
+        }
+        
+        tr:nth-child(even) {
+            background: #f9fafb;
+        }
+        
+        .note {
+            background: linear-gradient(135deg, #fffbeb, #fef3c7);
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 10px;
+            font-size: 0.95em;
+            border-left: 4px solid #f59e0b;
+        }
+        
+        @media print {
+            body {
+                background: white;
+                font-size: 14pt;
+            }
+            .container {
+                box-shadow: none;
+                padding: 20px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            .container {
+                padding: 25px;
+            }
+            h1 {
+                font-size: 2.2em;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+<h1>Assalamo Alaykum</h1>
+<p class="subtitle">Building Bridges Through Peace in the Modern World</p>
+
+<!-- OPENING -->
+<div class="opening">
+<h3>Khutbat al-Haajjah (Opening Sermon)</h3>
+<div class="arabic">إِنَّ الْحَمْدَ لِلَّهِ نَحْمَدُهُ وَنَسْتَعِينُهُ وَنَسْتَغْفِرُهُ وَنَعُوذُ بِاللَّهِ مِنْ شُرُورِ أَنْفُسِنَا وَمِنْ سَيِّئَاتِ أَعْمَالِنَا مَنْ يَهْدِهِ اللَّهُ فَلَا مُضِلَّ لَهُ وَمَنْ يُضْلِلْ فَلَا هَادِيَ لَهُ وَأَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ</div>
+<p class="translation">All praise belongs to Allah; we praise Him, seek His help, and ask His forgiveness. We seek refuge with Allah from the evil of our own souls and from our bad deeds. Whoever Allah guides, none can misguide; and whoever He lets go astray, none can guide. I bear witness that there is no one worthy of worship except Allah alone, and I bear witness that Muhammad is His servant and Messenger.</p>
+<div class="arabic">يَا أَيُّهَا الَّذِينَ آمَنُوا اتَّقُوا اللَّهَ حَقَّ تُقَاتِهِ وَلَا تَمُوتُنَّ إِلَّا وَأَنتُم مُّسْلِمُونَ</div>
+<p class="translation">"O you who believe, fear Allah as He should be feared and do not die except as Muslims." (Quran 3:102)</p>
+<p><strong>أَمَّا بَعْدُ</strong> (Amma ba'du - And what follows...)</p>
+</div>
+
+<div class="pause">✦ ✦ ✦</div>
+
+<!-- INTRODUCTION -->
+<h2>Introduction: Peace in a Connected World</h2>
+<p><strong>Assalamo alaykum, dear brothers and sisters.</strong></p>
+
+<p>In our hyperconnected digital age, we have more ways to communicate than ever before. Yet paradoxically, we often feel more isolated, more divided, and more suspicious of one another. Social media connects us to thousands, but genuine human connection seems increasingly rare.</p>
+
+<div class="key-point">
+<strong>Today, let us rediscover an ancient practice that can heal our modern wounds:</strong>
+<ul>
+<li>The simple, profound greeting of <strong>Assalamo alaykum</strong></li>
+<li>A practice that predates all social networks</li>
+<li>A divine prescription for building real community</li>
+<li>The key to unlocking hearts and opening doors</li>
+</ul>
+</div>
+
+<p>This greeting is not just a cultural tradition or religious formality. It is a revolutionary social technology—a way of transforming strangers into family, suspicion into trust, and isolation into belonging.</p>
+
+<div class="pause">✦ ✦ ✦</div>
+
+<!-- MODERN RELEVANCE -->
+<h2>Why Salaam Matters More Than Ever</h2>
+
+<h3>1. Breaking Digital Barriers</h3>
+<p>We live behind screens, in echo chambers, surrounded by algorithms that show us only what we want to see. The simple act of greeting someone face-to-face with <em>Assalamo alaykum</em> breaks through these digital walls.</p>
+
+<div class="scholar-quote">
+<p><strong>Modern Insight:</strong> Research shows that face-to-face greetings release oxytocin—the "bonding hormone"—creating instant human connection. When we add the spiritual dimension of Islamic greeting, we're not just connecting human to human, but soul to soul through Allah's blessing.</p>
+</div>
+
+<h3>2. Healing Social Anxiety</h3>
+<p>Many young Muslims today struggle with social anxiety, especially when meeting new people. The structured nature of Islamic greeting provides a framework that makes social interaction easier and more meaningful.</p>
+
+<div class="hadith-box">
+<strong>The Prophet ﷺ said:</strong>
+<div class="arabic">إِنَّ أَوْلَى النَّاسِ بِاللَّهِ مَنْ بَدَأَهُمْ بِالسَّلَامِ</div>
+<p class="translation">"The person nearest to Allah is one who is the first to offer greeting."</p>
+<p class="reference">(Abu Dawud, At-Tirmidhi: Sahih)</p>
+</div>
+
+<div class="remember">
+💡 <strong>Modern Application:</strong> When you initiate salaam, you're not just being polite—you're actively drawing closer to Allah while helping others feel welcomed and valued.
+</div>
+
+<div class="pause">✦ ✦ ✦</div>
+
+<!-- PRACTICAL MODERN APPLICATIONS -->
+<h2>Salaam in Modern Contexts</h2>
+
+<h3>At Work and School</h3>
+<div class="action-box">
+<strong>Practical Tips:</strong>
+<ul>
+<li><strong>In diverse workplaces:</strong> Use "Peace be upon you" as a universal greeting that shares the meaning without language barriers</li>
+<li><strong>With Muslim colleagues:</strong> A warm "Assalamo alaykum" can transform workplace relationships</li>
+<li><strong>In schools:</strong> Teach children that greeting others is both good manners and worship</li>
+<li><strong>Online meetings:</strong> Start virtual gatherings with salaam to bring spiritual presence to digital spaces</li>
+</ul>
+</div>
+
+<h3>In Diverse Communities</h3>
+<p>Living in multicultural societies gives us unique opportunities to be ambassadors of peace. When non-Muslims hear "Peace be upon you," they often respond with curiosity and warmth.</p>
+
+<div class="key-point">
+<strong>Real Story:</strong> A Muslim doctor in London started greeting all his patients with "Peace be upon you" regardless of their background. Patients began requesting him specifically, saying his greeting made them feel genuinely cared for. His practice became known as the "place of peace."
+</div>
+
+<div class="pause">✦ ✦ ✦</div>
+
+<!-- OVERCOMING MODERN HESITATIONS -->
+<h2>Overcoming Modern Hesitations</h2>
+
+<h3>Common Modern Excuses (And Islamic Responses)</h3>
+
+<table>
+<thead>
+<tr>
+<th>Modern Hesitation</th>
+<th>Islamic Response</th>
+<th>Practical Solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"It feels awkward"</td>
+<td>The Prophet ﷺ never let awkwardness stop him from doing good</td>
+<td>Start with family, then close friends, then expand gradually</td>
+</tr>
+<tr>
+<td>"People might think it's weird"</td>
+<td>Being different for Allah's sake is a blessing, not a burden</td>
+<td>Explain the meaning: "It means 'peace be upon you'"</td>
+</tr>
+<tr>
+<td>"I don't know if they're Muslim"</td>
+<td>Peace is universal—everyone deserves to hear it</td>
+<td>Use "Peace be upon you" or simply smile warmly</td>
+</tr>
+<tr>
+<td>"They might not respond"</td>
+<td>Your reward is with Allah, not dependent on their response</td>
+<td>Give them the benefit of the doubt—maybe they didn't hear</td>
+</tr>
+</tbody>
+</table>
+
+<div class="pause">✦ ✦ ✦</div>
+
+<!-- DIGITAL AGE APPLICATIONS -->
+<h2>Salaam in the Digital Age</h2>
+
+<h3>Social Media Salaam</h3>
+<div class="action-box">
+<strong>Modern Ways to Spread Peace:</strong>
+<ul>
+<li><strong>WhatsApp groups:</strong> Start with "Assalamo alaykum everyone" instead of just jumping into topics</li>
+<li><strong>Video calls:</strong> Begin family calls or meetings with proper salaam</li>
+<li><strong>Social posts:</strong> Include peaceful greetings in your content</li>
+<li><strong>Comments:</strong> Respond to others with kindness and peace-filled language</li>
+</ul>
+</div>
+
+<h3>Building Online Communities</h3>
+<p>Just as the Prophet ﷺ used salaam to build the first Muslim community in Madinah, we can use it to build healthy online communities today.</p>
+
+<div class="scholar-quote">
+<p><strong>Digital Wisdom:</strong> Every online interaction is an opportunity for dawah. When you consistently greet others with peace and respond with kindness, you're showing the beauty of Islam through your character.</p>
+</div>
+
+<div class="pause">✦ ✦ ✦</div>
+
+<!-- REWARDS AND BENEFITS -->
+<h2>The Rewards: Both Worldly and Spiritual</h2>
+
+<h3>Spiritual Rewards</h3>
+<div class="hadith-box">
+<strong>The Prophet ﷺ said:</strong>
+<div class="arabic">لَا تَدْخُلُوا الْجَنَّةَ حَتَّى تُؤْمِنُوا، وَلَا تُؤْمِنُوا حَتَّى تَحَابُّوا، أَوَلَا أَدُلُّكُمْ عَلَى شَيْءٍ إِذَا فَعَلْتُمُوهُ تَحَابَبْتُمْ؟ أَفْشُوا السَّلَامَ بَيْنَكُمْ</div>
+<p class="translation">"You will not enter Paradise until you believe, and you will not believe until you love one another. Shall I not guide you to something which, if you do, you will love one another? Spread salaam among yourselves."</p>
+<p class="reference">(Sahih Muslim)</p>
+</div>
+
+<h3>Worldly Benefits</h3>
+<div class="key-point">
+<strong>Modern research confirms what Islam taught 1400 years ago:</strong>
+<ul>
+<li><strong>Reduced stress:</strong> Positive social interactions lower cortisol levels</li>
+<li><strong>Better relationships:</strong> People who greet others warmly are perceived as more trustworthy</li>
+<li><strong>Increased opportunities:</strong> Networking happens naturally when you're genuinely friendly</li>
+<li><strong>Improved mental health:</strong> Regular positive social contact combats depression and anxiety</li>
+</ul>
+</div>
+
+<div class="pause">✦ ✦ ✦</div>
+
+<!-- CALL TO ACTION -->
+<h2>Your 30-Day Salaam Challenge</h2>
+
+<div class="action-box">
+<h3>Week 1: Foundation</h3>
+<ul>
+<li>Perfect your salaam with family members</li>
+<li>Greet everyone in your household properly each day</li>
+<li>Practice saying "Peace be upon you" in English</li>
+</ul>
+
+<h3>Week 2: Expansion</h3>
+<ul>
+<li>Greet 3 people you know but don't usually greet</li>
+<li>Use salaam in your workplace or school</li>
+<li>Start online conversations with peaceful greetings</li>
+</ul>
+
+<h3>Week 3: Courage</h3>
+<ul>
+<li>Greet 2 strangers each day (Muslims and non-Muslims)</li>
+<li>Explain the meaning when people ask</li>
+<li>Share your experience with friends</li>
+</ul>
+
+<h3>Week 4: Mastery</h3>
+<ul>
+<li>Make salaam your default greeting everywhere</li>
+<li>Teach others about the beauty of Islamic greetings</li>
+<li>Reflect on how it has changed your relationships</li>
+</ul>
+</div>
+
+<div class="remember">
+🎯 <strong>Goal:</strong> By the end of 30 days, you should feel natural and confident greeting anyone, anywhere, with the peace and blessings of Allah.
+</div>
+
+<div class="pause">✦ ✦ ✦</div>
+
+<!-- CLOSING -->
+<h2>Conclusion: Be a Bridge Builder</h2>
+
+<p>Brothers and sisters, in a world that seems increasingly divided, Allah has given us a simple but powerful tool: the greeting of peace.</p>
+
+<p>Every time you say "Assalamo alaykum," you are:</p>
+<ul>
+<li>Following the Sunnah of the Prophet ﷺ</li>
+<li>Drawing closer to Allah</li>
+<li>Building bridges between hearts</li>
+<li>Spreading peace in a troubled world</li>
+<li>Earning rewards that will benefit you in this life and the next</li>
+</ul>
+
+<div class="key-point">
+<p><strong>Remember:</strong> You don't need a platform, a degree, or special skills to make a positive impact. You just need the courage to greet others with the peace that Allah has placed in your heart.</p>
+</div>
+
+<p>Let us leave this masjid today committed to being ambassadors of peace. Let us make our communities, our workplaces, our schools, and our online spaces a little more peaceful, one greeting at a time.</p>
+
+<div class="pause">✦ ✦ ✦</div>
+
+<!-- SECOND KHUTBAH -->
+<div class="opening">
+<h3>Second Khutbah</h3>
+<div class="arabic">أَقُولُ قَوْلِي هَذَا، وَأَسْتَغْفِرُ اللهَ لِي وَلَكُمْ وَلِسَائِرِ الْمُسْلِمِينَ، فَاسْتَغْفِرُوهُ، إِنَّهُ هُوَ الْغَفُورُ الرَّحِيمُ</div>
+<p class="translation">I say these words, and I ask Allah for forgiveness for myself and all of you. Seek His forgiveness, for He is the Most Forgiving, Most Merciful.</p>
+</div>
+
+<!-- FINAL DUA -->
+<div class="action-box">
+<h3>Final Du'a</h3>
+<div class="arabic">اللَّهُمَّ اجْعَلْنَا مِنْ أَهْلِ السَّلَامِ، وَاهْدِنَا إِلَى دَارِ السَّلَامِ، وَأَلِّفْ بَيْنَ قُلُوبِنَا، وَاجْعَلْنَا سَبَبًا فِي نَشْرِ السَّلَامِ فِي الْعَالَمِ. اللَّهُمَّ بَارِكْ لَنَا فِي أَقْوَالِنَا وَأَعْمَالِنَا، وَاجْعَلْنَا مِنَ الَّذِينَ يَسْتَمِعُونَ الْقَوْلَ فَيَتَّبِعُونَ أَحْسَنَهُ. آمِينَ</div>
+<p class="translation">O Allah, make us among the people of peace, and guide us to the Home of Peace. Unite our hearts and make us a means of spreading peace in the world. O Allah, bless our words and actions, and make us among those who listen to speech and follow the best of it. Ameen.</p>
+</div>
+
+<h1 style="text-align: center; margin-top: 50px; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">السَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللهِ وَبَرَكَاتُهُ</h1>
+<p style="text-align: center; font-size: 1.4em; margin-bottom: 50px; color: #4a5568;">Assalamo Alaykum wa Rahmatullahi wa Barakatuh</p>
+
+<!-- DELIVERY NOTES -->
+<div class="note">
+<h3>📱 Modern Delivery Tips</h3>
+<ul>
+<li>Use relatable examples from social media, workplace, and daily life</li>
+<li>Encourage congregation to share their salaam experiences on social media with a hashtag</li>
+<li>Consider creating a community challenge or group chat for accountability</li>
+<li>Address specific concerns of young Muslims living in diverse societies</li>
+<li>Connect ancient wisdom with contemporary research and psychology</li>
+<li>Make it practical and actionable for the digital generation</li>
+</ul>
+</div>
+
+</div>
+</body>
+</html>

@@ -7,7 +7,7 @@ class TemplateService {
   static Future<List<Template>> getAllTemplates() async {
     try {
       final response = await SupabaseService.select(
-        'templates',
+        'minbar_templates',
         orderBy: 'name',
         ascending: true,
       );
@@ -29,7 +29,7 @@ class TemplateService {
   static Future<List<Template>> getTemplatesByType(TemplateType type) async {
     try {
       final response = await SupabaseService.select(
-        'templates',
+        'minbar_templates',
         filters: {'type': type.name},
         orderBy: 'name',
         ascending: true,
@@ -55,7 +55,7 @@ class TemplateService {
       if (userId == null) throw 'User not authenticated';
 
       final response = await SupabaseService.select(
-        'templates',
+        'minbar_templates',
         filters: {'user_id': userId},
         orderBy: 'name',
         ascending: true,
@@ -80,7 +80,7 @@ class TemplateService {
       final userId = SupabaseAuth.currentUser?.id;
       if (userId == null) throw 'User not authenticated';
 
-      final response = await SupabaseService.insert('templates', {
+      final response = await SupabaseService.insert('minbar_templates', {
         'user_id': userId,
         'name': template.name,
         'content': template.content,
@@ -108,7 +108,7 @@ class TemplateService {
   static Future<Template> updateTemplate(Template template) async {
     try {
       final response = await SupabaseService.update(
-        'templates',
+        'minbar_templates',
         {
           'name': template.name,
           'content': template.content,
@@ -136,7 +136,7 @@ class TemplateService {
   /// Delete a template (only user's own templates)
   static Future<void> deleteTemplate(String templateId) async {
     try {
-      await SupabaseService.delete('templates', filters: {'id': templateId});
+      await SupabaseService.delete('minbar_templates', filters: {'id': templateId});
     } catch (e) {
       throw 'Failed to delete template: $e';
     }
@@ -170,7 +170,7 @@ class TemplateService {
     try {
       // Check if default templates already exist
       final existingTemplates = await SupabaseService.select(
-        'templates',
+        'minbar_templates',
         filters: {'user_id': null}, // System templates have null user_id
       );
 
@@ -179,7 +179,7 @@ class TemplateService {
       // Insert default templates
       final defaultTemplates = DefaultTemplates.all;
       for (final template in defaultTemplates) {
-        await SupabaseService.insert('templates', {
+        await SupabaseService.insert('minbar_templates', {
           'id': template.id,
           'user_id': null, // System template
           'name': template.name,

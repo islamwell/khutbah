@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:pulpitflow/models/khutbah.dart';
 import 'package:pulpitflow/services/user_data_service.dart';
 import 'package:pulpitflow/screens/rich_editor_screen.dart';
+import 'package:pulpitflow/screens/templates_screen.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:pulpitflow/services/html_import_service.dart';
 import 'package:flutter_quill/flutter_quill.dart';
-import 'package:pulpitflow/widgets/template_selection_dialog.dart';
 import 'dart:convert';
+import 'package:pulpitflow/services/speech_log_service.dart';
+import 'package:intl/intl.dart';
 
 class LibraryScreen extends StatefulWidget {
   const LibraryScreen({super.key});
@@ -20,6 +22,8 @@ class _LibraryScreenState extends State<LibraryScreen> {
   List<Khutbah> filteredKhutbahs = [];
   bool isLoading = true;
   final TextEditingController _searchController = TextEditingController();
+  Map<String, int> deliveryCounts = {};
+  Map<String, DateTime?> mostRecentDeliveries = {};
 
   @override
   void initState() {
@@ -37,6 +41,10 @@ class _LibraryScreenState extends State<LibraryScreen> {
   Future<void> _loadKhutbahs() async {
     try {
       final loadedKhutbahs = await UserDataService.getAllKhutbahs();
+      
+      // Load delivery counts and most recent delivery dates for all khutbahs
+      await _loadDeliveryData(loadedKhutbahs);
+      
       setState(() {
         khutbahs = loadedKhutbahs;
         filteredKhutbahs = loadedKhutbahs;
@@ -47,6 +55,33 @@ class _LibraryScreenState extends State<LibraryScreen> {
         isLoading = false;
       });
     }
+  }
+
+  Future<void> _loadDeliveryData(List<Khutbah> khutbahs) async {
+    final counts = <String, int>{};
+    final recentDates = <String, DateTime?>{};
+    
+    for (final khutbah in khutbahs) {
+      try {
+        // Get delivery count
+        final count = await SpeechLogService.getDeliveryCount(khutbah.id);
+        counts[khutbah.id] = count;
+        
+        // Get most recent delivery date if there are any deliveries
+        if (count > 0) {
+          final logs = await SpeechLogService.getSpeechLogsByKhutbah(khutbah.id);
+          if (logs.isNotEmpty) {
+            recentDates[khutbah.id] = logs.first.deliveryDate;
+          }
+        }
+      } catch (e) {
+        // If there's an error, just set count to 0
+        counts[khutbah.id] = 0;
+      }
+    }
+    
+    deliveryCounts = counts;
+    mostRecentDeliveries = recentDates;
   }
 
   void _filterKhutbahs() {
@@ -244,6 +279,9 @@ class _LibraryScreenState extends State<LibraryScreen> {
   }
 
   Widget _buildKhutbahCard(Khutbah khutbah) {
+    final deliveryCount = deliveryCounts[khutbah.id] ?? 0;
+    final mostRecentDelivery = mostRecentDeliveries[khutbah.id];
+    
     return GestureDetector(
       onTap: () => _editKhutbah(khutbah),
       child: Container(
@@ -270,6 +308,34 @@ class _LibraryScreenState extends State<LibraryScreen> {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
+                // Delivery count badge
+                if (deliveryCount > 0)
+                  Container(
+                    margin: const EdgeInsets.only(left: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.secondaryContainer,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.event_available,
+                          size: 14,
+                          color: Theme.of(context).colorScheme.onSecondaryContainer,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          '$deliveryCount',
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: Theme.of(context).colorScheme.onSecondaryContainer,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 PopupMenuButton<String>(
                   onSelected: (value) => _handleMenuAction(value, khutbah),
                   itemBuilder: (context) => [
@@ -354,6 +420,58 @@ class _LibraryScreenState extends State<LibraryScreen> {
                   ),
               ],
             ),
+            // Most recent delivery date
+            if (mostRecentDelivery != null) ...[
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Icon(
+                    Icons.history,
+                    size: 16,
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    'Last delivered: ${_formatShortDate(mostRecentDelivery)}',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+            // Quick actions
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                // Log Delivery button
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () => _logDelivery(khutbah),
+                    icon: const Icon(Icons.add_circle_outline, size: 18),
+                    label: const Text('Log Delivery'),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                    ),
+                  ),
+                ),
+                // View Delivery History button (only show if there are deliveries)
+                if (deliveryCount > 0) ...[
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () => _viewDeliveryHistory(khutbah),
+                      icon: const Icon(Icons.history, size: 18),
+                      label: const Text('History'),
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
           ],
         ),
       ),
@@ -407,6 +525,37 @@ class _LibraryScreenState extends State<LibraryScreen> {
     final displayHour = hour == 0 ? 12 : (hour > 12 ? hour - 12 : hour);
     
     return '$weekday $month $day, $year ${displayHour}:${minute}$period';
+  }
+
+  String _formatShortDate(DateTime date) {
+    return DateFormat('MMM d, yyyy').format(date);
+  }
+
+  void _logDelivery(Khutbah khutbah) async {
+    final result = await Navigator.pushNamed(
+      context,
+      '/speech-log-form',
+      arguments: {
+        'preselectedKhutbahId': khutbah.id,
+        'preselectedKhutbahTitle': khutbah.title,
+      },
+    );
+
+    // Reload khutbahs if log was saved
+    if (result == true) {
+      _loadKhutbahs();
+    }
+  }
+
+  void _viewDeliveryHistory(Khutbah khutbah) {
+    Navigator.pushNamed(
+      context,
+      '/filtered-speech-logs',
+      arguments: {
+        'khutbahId': khutbah.id,
+        'khutbahTitle': khutbah.title,
+      },
+    ).then((_) => _loadKhutbahs());
   }
 
   void _handleMenuAction(String action, Khutbah khutbah) async {
@@ -497,21 +646,11 @@ class _LibraryScreenState extends State<LibraryScreen> {
     }
   }
 
-  Future<void> _showTemplateDialog() async {
-    final khutbah = await showDialog<Khutbah>(
-      context: context,
-      builder: (context) => const TemplateSelectionDialog(),
-    );
-    
-    if (khutbah != null) {
-      try {
-        await UserDataService.saveKhutbah(khutbah);
-        _showSnack('Created "${khutbah.title}" from template');
-        await _loadKhutbahs();
-      } catch (e) {
-        _showSnack('Failed to create khutbah: $e');
-      }
-    }
+  void _showTemplateDialog() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const TemplatesScreen()),
+    ).then((_) => _loadKhutbahs());
   }
 
   void _showSnack(String message) {

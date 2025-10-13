@@ -7,7 +7,7 @@ class KhutbahService {
   static Future<List<Khutbah>> getUserKhutbahs() async {
     try {
       final response = await SupabaseService.select(
-        'khutbahs',
+        'minbar_khutbahs',
         orderBy: 'modified_at',
         ascending: false,
       );
@@ -31,7 +31,7 @@ class KhutbahService {
   static Future<List<Khutbah>> getKhutbahsByFolder(String folderId) async {
     try {
       final response = await SupabaseService.select(
-        'khutbahs',
+        'minbar_khutbahs',
         filters: {'folder_id': folderId},
         orderBy: 'modified_at',
         ascending: false,
@@ -58,7 +58,7 @@ class KhutbahService {
       final userId = SupabaseAuth.currentUser?.id;
       if (userId == null) throw 'User not authenticated';
 
-      final response = await SupabaseService.insert('khutbahs', {
+      final response = await SupabaseService.insert('minbar_khutbahs', {
         'user_id': userId,
         'title': khutbah.title,
         'content': khutbah.content,
@@ -89,7 +89,7 @@ class KhutbahService {
   static Future<Khutbah> updateKhutbah(Khutbah khutbah) async {
     try {
       final response = await SupabaseService.update(
-        'khutbahs',
+        'minbar_khutbahs',
         {
           'title': khutbah.title,
           'content': khutbah.content,
@@ -120,7 +120,7 @@ class KhutbahService {
   /// Delete a khutbah
   static Future<void> deleteKhutbah(String khutbahId) async {
     try {
-      await SupabaseService.delete('khutbahs', filters: {'id': khutbahId});
+      await SupabaseService.delete('minbar_khutbahs', filters: {'id': khutbahId});
     } catch (e) {
       throw 'Failed to delete khutbah: $e';
     }
@@ -134,7 +134,7 @@ class KhutbahService {
 
       // Use Supabase text search functionality
       dynamic searchQuery = SupabaseConfig.client
-          .from('khutbahs')
+          .from('minbar_khutbahs')
           .select('*')
           .eq('user_id', userId)
           .or('title.ilike.%$query%,content.ilike.%$query%,tags.ilike.%$query%')
@@ -161,7 +161,7 @@ class KhutbahService {
   static Future<Khutbah?> getKhutbahById(String id) async {
     try {
       final response = await SupabaseService.selectSingle(
-        'khutbahs',
+        'minbar_khutbahs',
         filters: {'id': id},
       );
 

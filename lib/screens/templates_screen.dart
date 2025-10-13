@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pulpitflow/models/template.dart';
 import 'package:pulpitflow/models/khutbah.dart';
 import 'package:pulpitflow/screens/rich_editor_screen.dart';
+import 'package:pulpitflow/services/html_to_quill_converter_simple.dart';
 
 class TemplatesScreen extends StatelessWidget {
   const TemplatesScreen({super.key});
@@ -186,12 +188,19 @@ class TemplatesScreen extends StatelessWidget {
         // Read the HTML file
         final htmlFile = await rootBundle.loadString(htmlPath);
         
-        // Create a Khutbah with HTML content
+        // Convert HTML to Quill format
+        final quillDocument = HtmlToQuillConverterSimple.convertHtmlToQuill(htmlFile);
+        final quillJson = jsonEncode(quillDocument.toDelta().toJson());
+        
+        print('Converted HTML to Quill. Document length: ${quillDocument.length}');
+        print('Plain text preview: ${quillDocument.toPlainText().substring(0, quillDocument.toPlainText().length > 100 ? 100 : quillDocument.toPlainText().length)}');
+        
+        // Create a Khutbah with converted Quill content
         final khutbah = Khutbah(
           id: DateTime.now().millisecondsSinceEpoch.toString(),
           title: template.name,
-          content: htmlFile,
-          tags: ['html', 'template'],
+          content: quillJson,
+          tags: ['template', 'converted'],
           createdAt: DateTime.now(),
           modifiedAt: DateTime.now(),
           estimatedMinutes: 20,

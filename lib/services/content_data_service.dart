@@ -5,7 +5,7 @@ import 'package:pulpitflow/services/storage_service.dart';
 
 /// Service to handle content items with cloud synchronization
 class ContentDataService {
-  static const String _contentItemsTable = 'content_items';
+  static const String _contentItemsTable = 'minbar_content_items';
   
   /// Add a new content item (both locally and to cloud)
   static Future<void> addContentItem(ContentItem item) async {

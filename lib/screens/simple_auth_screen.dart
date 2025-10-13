@@ -30,7 +30,7 @@ class _SimpleAuthScreenState extends State<SimpleAuthScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Al-Minbar'),
+        title: const Text('NQ Khutbah Companion'),
         backgroundColor: Colors.green,
         foregroundColor: Colors.white,
       ),
@@ -50,7 +50,7 @@ class _SimpleAuthScreenState extends State<SimpleAuthScreen> {
               ),
               const SizedBox(height: 16),
               const Text(
-                'Al-Minbar',
+                'NQ Khutbah Companion',
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,

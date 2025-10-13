@@ -10,6 +10,7 @@ environment:
 dependencies:
   flutter_quill: ^11.4.2
   html: ^0.15.6
+  flutter_html: ^3.0.0-beta.2
   file_picker: ^8.1.2
   share_plus: ^12.0.0
   printing: ^5.0.0

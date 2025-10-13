@@ -6,7 +6,7 @@ import 'package:pulpitflow/services/content_data_service.dart';
 
 /// Service to handle user-specific data synchronization between local and cloud storage
 class UserDataService {
-  static const String _khutbahsTable = 'khutbahs';
+  static const String _khutbahsTable = 'minbar_khutbahs';
   
   /// Sync local khutbahs to cloud storage for authenticated user
   static Future<void> syncKhutbahsToCloud() async {
@@ -61,14 +61,144 @@ class UserDataService {
     if (!SupabaseAuth.isAuthenticated) return;
     
     try {
+      print('DEBUG: Deleting khutbah from cloud...');
+      print('  Khutbah ID: $khutbahId');
+      
       final userId = SupabaseAuth.currentUser!.id;
-      await SupabaseService.delete(
-        _khutbahsTable,
-        filters: {
-          'user_id': userId,
-          'id': khutbahId,
-        },
-      );
+      
+      // Check if this is a timestamp ID (local) or UUID (cloud)
+      final isTimestampId = int.tryParse(khutbahId) != null;
+      print('  Is timestamp ID: $isTimestampId');
+      
+      if (isTimestampId) {
+        // This is a local ID - need to find the corresponding cloud khutbah by title
+        print('  WARNING: Cannot delete from cloud with timestamp ID');
+        print('  Local khutbahs with timestamp IDs are not synced to cloud with same ID');
+        print('  The cloud version has a different UUID');
+        
+        // Try to find by loading all khutbahs and matching by title
+        // This is a workaround - ideally we'd maintain ID mapping
+        final localKhutbahs = await StorageService.getAllKhutbahs();
+        final localKhutbah = localKhutbahs.where((k) => k.id == khutbahId).firstOrNull;
+        
+        if (localKhutbah != null) {
+          print('  Found local khutbah: ${localKhutbah.title}');
+          print('  Searching for matching cloud khutbah by title...');
+          
+          // Load all cloud khutbahs
+          final cloudKhutbahs = await loadKhutbahsFromCloud();
+          final matchingCloud = cloudKhutbahs.where((k) => 
+            k.title == localKhutbah.title &&
+            k.content == localKhutbah.content
+          ).toList();
+          
+          if (matchingCloud.isNotEmpty) {
+            final cloudKhutbah = matchingCloud.first;
+            print('  Found matching cloud khutbah with UUID: ${cloudKhutbah.id}');
+            
+            // Delete using the cloud UUID
+            await SupabaseService.delete(
+              _khutbahsTable,
+              filters: {
+                'user_id': userId,
+                'id': cloudKhutbah.id,
+              },
+            );
+            print('  SUCCESS: Deleted from cloud');
+          } else {
+            print('  WARNING: No matching cloud khutbah found');
+          }
+        } else {
+          print('  ERROR: Local khutbah not found');
+          print('  This might happen if khutbah was already deleted locally');
+          print('  Attempting to find cloud khutbah by timestamp...');
+          
+          // Convert timestamp ID to DateTime
+          try {
+            final timestamp = int.parse(khutbahId);
+            final createdTime = DateTime.fromMillisecondsSinceEpoch(timestamp);
+            print('  Timestamp converts to: $createdTime');
+            
+            // Load all cloud khutbahs and find ones created around this time
+            final cloudKhutbahs = await loadKhutbahsFromCloud();
+            print('  Searching ${cloudKhutbahs.length} cloud khutbahs...');
+            
+            // Show all cloud khutbahs with their creation times
+            print('  All cloud khutbahs:');
+            for (int i = 0; i < cloudKhutbahs.length; i++) {
+              final k = cloudKhutbahs[i];
+              final timeDiff = k.createdAt.difference(createdTime);
+              print('    ${i + 1}. "${k.title}" (ID: ${k.id})');
+              print('       Created: ${k.createdAt}');
+              print('       Time diff: ${timeDiff.inMinutes} minutes, ${timeDiff.inSeconds % 60} seconds');
+            }
+            
+            // Find khutbahs created within 5 minutes of the timestamp (expanded window)
+            final candidates = cloudKhutbahs.where((k) {
+              final timeDiff = k.createdAt.difference(createdTime).abs();
+              return timeDiff.inMinutes <= 5;
+            }).toList();
+            
+            if (candidates.isNotEmpty) {
+              print('  Found ${candidates.length} candidate(s) created within 5 minutes of $createdTime:');
+              for (final candidate in candidates) {
+                print('    - "${candidate.title}" (ID: ${candidate.id}, Created: ${candidate.createdAt})');
+              }
+              
+              // Delete the first candidate (most likely match)
+              final toDelete = candidates.first;
+              print('  Deleting: "${toDelete.title}" (ID: ${toDelete.id})');
+              
+              await SupabaseService.delete(
+                _khutbahsTable,
+                filters: {
+                  'user_id': userId,
+                  'id': toDelete.id,
+                },
+              );
+              print('  SUCCESS: Deleted cloud khutbah by timestamp matching');
+            } else {
+              print('  WARNING: No cloud khutbahs found created within 5 minutes of $createdTime');
+              
+              // Last resort: delete the most recently created khutbah
+              if (cloudKhutbahs.isNotEmpty) {
+                print('  LAST RESORT: Deleting the most recently created khutbah');
+                
+                // Sort by creation time, most recent first
+                cloudKhutbahs.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+                final mostRecent = cloudKhutbahs.first;
+                
+                print('  Most recent khutbah: "${mostRecent.title}" (ID: ${mostRecent.id}, Created: ${mostRecent.createdAt})');
+                print('  Deleting this khutbah...');
+                
+                await SupabaseService.delete(
+                  _khutbahsTable,
+                  filters: {
+                    'user_id': userId,
+                    'id': mostRecent.id,
+                  },
+                );
+                print('  SUCCESS: Deleted most recent cloud khutbah');
+              } else {
+                print('  INFO: No cloud khutbahs found at all - might already be deleted');
+              }
+            }
+          } catch (e) {
+            print('  ERROR: Could not parse timestamp: $e');
+          }
+        }
+      } else {
+        // This is already a UUID - delete directly
+        print('  Action: DELETE with UUID');
+        await SupabaseService.delete(
+          _khutbahsTable,
+          filters: {
+            'user_id': userId,
+            'id': khutbahId,
+          },
+        );
+        print('  SUCCESS: Deleted from cloud');
+      }
     } catch (e) {
       debugPrint('Error deleting khutbah from cloud: $e');
     }
@@ -158,33 +288,55 @@ class UserDataService {
   
   /// Private helper to save khutbah to cloud
   static Future<void> _saveKhutbahToCloud(Khutbah khutbah, String userId) async {
+    print('DEBUG: Saving khutbah to cloud...');
+    print('  Khutbah ID: ${khutbah.id}');
+    print('  Khutbah Title: ${khutbah.title}');
+    print('  User ID: $userId');
+    
     final cloudData = _khutbahToCloudData(khutbah, userId);
     
-    // Check if khutbah already exists in cloud
-    final existing = await SupabaseService.selectSingle(
-      _khutbahsTable,
-      filters: {
-        'user_id': userId,
-        'id': khutbah.id,
-      },
-    );
+    // Check if this is a timestamp ID (local) or UUID (cloud)
+    final isTimestampId = int.tryParse(khutbah.id) != null;
+    print('  Is timestamp ID: $isTimestampId');
     
-    if (existing != null) {
-      // Update existing
-      await SupabaseService.update(
+    if (isTimestampId) {
+      // This is a local khutbah with timestamp ID - insert as new with UUID
+      print('  Action: INSERT new (will get UUID from Supabase)');
+      final insertData = Map<String, dynamic>.from(cloudData);
+      insertData.remove('id'); // Let Supabase generate UUID
+      
+      final response = await SupabaseService.insert(_khutbahsTable, insertData);
+      final newId = response.first['id'];
+      print('  SUCCESS: Created with UUID: $newId');
+      
+      // TODO: Update local storage with new UUID
+      // This would require updating StorageService to handle ID updates
+    } else {
+      // This is already a UUID - check if exists and update or insert
+      final existing = await SupabaseService.selectSingle(
         _khutbahsTable,
-        cloudData,
         filters: {
           'user_id': userId,
           'id': khutbah.id,
         },
       );
-    } else {
-      // Insert new - let Supabase generate UUID if needed
-      final insertData = Map<String, dynamic>.from(cloudData);
-      // Remove id to let Supabase auto-generate UUID
-      insertData.remove('id');
-      await SupabaseService.insert(_khutbahsTable, insertData);
+      
+      if (existing != null) {
+        print('  Action: UPDATE existing');
+        await SupabaseService.update(
+          _khutbahsTable,
+          cloudData,
+          filters: {
+            'user_id': userId,
+            'id': khutbah.id,
+          },
+        );
+        print('  SUCCESS: Updated');
+      } else {
+        print('  Action: INSERT with existing UUID');
+        await SupabaseService.insert(_khutbahsTable, cloudData);
+        print('  SUCCESS: Inserted');
+      }
     }
   }
   

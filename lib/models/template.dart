@@ -102,5 +102,18 @@ Brothers and sisters, on this blessed day of Eid,
     content: '''HTML:assets/templates/AssalamoAlaykumGreeting.html''',
   );
 
-  static List<Template> get all => [standardTemplate, eidTemplate, salaamGreetingTemplate];
+  static const livingBookTemplate = Template(
+    id: 'living_book',
+    name: 'The Living Book for Living People',
+    description: 'Powerful khutbah on remembering Allah and making the Quran a living part of our daily lives',
+    type: TemplateType.general,
+    content: '''HTML:assets/templates/LivingBookForLivingPeople.html''',
+  );
+
+  static List<Template> get all => [
+    standardTemplate, 
+    eidTemplate, 
+    salaamGreetingTemplate,
+    livingBookTemplate,
+  ];
 }

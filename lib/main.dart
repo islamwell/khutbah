@@ -7,6 +7,11 @@ import 'package:pulpitflow/supabase/supabase_config.dart';
 import 'package:pulpitflow/utils/app_settings.dart';
 import 'package:pulpitflow/l10n/app_localizations.dart';
 import 'package:pulpitflow/screens/home_screen.dart';
+import 'package:pulpitflow/screens/speech_logs_screen.dart';
+import 'package:pulpitflow/screens/speech_log_detail_screen.dart';
+import 'package:pulpitflow/screens/speech_log_form_screen.dart';
+import 'package:pulpitflow/screens/filtered_speech_logs_screen.dart';
+import 'package:pulpitflow/models/speech_log.dart';
 import 'package:pulpitflow/services/storage_service.dart';
 
 Future<void> main() async {
@@ -71,6 +76,36 @@ class MyApp extends StatelessWidget {
           home: const AuthWrapper(),
           routes: {
             '/home': (context) => const HomeScreen(),
+            '/speech-logs': (context) => const SpeechLogsScreen(),
+          },
+          onGenerateRoute: (settings) {
+            // Handle routes with parameters
+            if (settings.name == '/speech-log-detail') {
+              final log = settings.arguments as SpeechLog;
+              return MaterialPageRoute(
+                builder: (context) => SpeechLogDetailScreen(log: log),
+              );
+            }
+            if (settings.name == '/speech-log-form') {
+              final args = settings.arguments as Map<String, dynamic>?;
+              return MaterialPageRoute(
+                builder: (context) => SpeechLogFormScreen(
+                  existingLog: args?['existingLog'] as SpeechLog?,
+                  preselectedKhutbahId: args?['preselectedKhutbahId'] as String?,
+                  preselectedKhutbahTitle: args?['preselectedKhutbahTitle'] as String?,
+                ),
+              );
+            }
+            if (settings.name == '/filtered-speech-logs') {
+              final args = settings.arguments as Map<String, dynamic>;
+              return MaterialPageRoute(
+                builder: (context) => FilteredSpeechLogsScreen(
+                  khutbahId: args['khutbahId'] as String,
+                  khutbahTitle: args['khutbahTitle'] as String,
+                ),
+              );
+            }
+            return null;
           },
         );
       },

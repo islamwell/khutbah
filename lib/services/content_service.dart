@@ -7,7 +7,7 @@ class ContentService {
   static Future<List<ContentItem>> getAllContentItems() async {
     try {
       final response = await SupabaseService.select(
-        'content_items',
+        'minbar_content_items',
         orderBy: 'created_at',
         ascending: false,
       );
@@ -32,7 +32,7 @@ class ContentService {
   static Future<List<ContentItem>> getContentItemsByType(ContentType type) async {
     try {
       final response = await SupabaseService.select(
-        'content_items',
+        'minbar_content_items',
         filters: {'type': type.name},
         orderBy: 'created_at',
         ascending: false,
@@ -59,7 +59,7 @@ class ContentService {
     try {
       // Search in text, translation, source, and keywords
       dynamic searchQuery = SupabaseConfig.client
-          .from('content_items')
+          .from('minbar_content_items')
           .select('*')
           .or('text.ilike.%$query%,translation.ilike.%$query%,source.ilike.%$query%,keywords.ilike.%$query%')
           .order('created_at', ascending: false);
@@ -91,7 +91,7 @@ class ContentService {
       final keywordQuery = keywords.map((k) => 'keywords.ilike.%$k%').join(',');
       
       dynamic searchQuery = SupabaseConfig.client
-          .from('content_items')
+          .from('minbar_content_items')
           .select('*')
           .or(keywordQuery)
           .order('created_at', ascending: false);
@@ -121,7 +121,7 @@ class ContentService {
       if (userId == null) throw 'User not authenticated';
 
       final response = await SupabaseService.select(
-        'content_items',
+        'minbar_content_items',
         filters: {'user_id': userId},
         orderBy: 'created_at',
         ascending: false,
@@ -149,7 +149,7 @@ class ContentService {
       final userId = SupabaseAuth.currentUser?.id;
       if (userId == null) throw 'User not authenticated';
 
-      final response = await SupabaseService.insert('content_items', {
+      final response = await SupabaseService.insert('minbar_content_items', {
         'user_id': userId,
         'text': contentItem.text,
         'translation': contentItem.translation,
@@ -183,7 +183,7 @@ class ContentService {
   static Future<ContentItem> updateContentItem(ContentItem contentItem) async {
     try {
       final response = await SupabaseService.update(
-        'content_items',
+        'minbar_content_items',
         {
           'text': contentItem.text,
           'translation': contentItem.translation,
@@ -217,7 +217,7 @@ class ContentService {
   /// Delete a content item (only user's own content)
   static Future<void> deleteContentItem(String contentItemId) async {
     try {
-      await SupabaseService.delete('content_items', filters: {'id': contentItemId});
+      await SupabaseService.delete('minbar_content_items', filters: {'id': contentItemId});
     } catch (e) {
       throw 'Failed to delete content item: $e';
     }
@@ -255,7 +255,7 @@ class ContentService {
       final userId = SupabaseAuth.currentUser?.id;
       if (userId == null) throw 'User not authenticated';
 
-      await SupabaseService.insert('user_favorites', {
+      await SupabaseService.insert('minbar_user_favorites', {
         'user_id': userId,
         'item_type': 'content_item',
         'item_id': contentItemId,
@@ -271,7 +271,7 @@ class ContentService {
       final userId = SupabaseAuth.currentUser?.id;
       if (userId == null) throw 'User not authenticated';
 
-      await SupabaseService.delete('user_favorites', filters: {
+      await SupabaseService.delete('minbar_user_favorites', filters: {
         'user_id': userId,
         'item_type': 'content_item',
         'item_id': contentItemId,
@@ -287,10 +287,10 @@ class ContentService {
       final userId = SupabaseAuth.currentUser?.id;
       if (userId == null) throw 'User not authenticated';
 
-      // Join user_favorites with content_items
+      // Join user_favorites with minbar_content_items
       dynamic query = SupabaseConfig.client
-          .from('user_favorites')
-          .select('content_items(*)')
+          .from('minbar_user_favorites')
+          .select('minbar_content_items(*)')
           .eq('user_id', userId)
           .eq('item_type', 'content_item');
 

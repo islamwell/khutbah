@@ -1,7 +1,7 @@
 name: pulpitflow
 description: "Al-Minbar: A comprehensive Islamic Khutbah preparation app that combines research, writing, and delivery into one seamless workflow."
 publish_to: "none"
-version: 1.0.6+6
+version: 1.1.0+7
 
 environment:
   sdk: '>=3.6.0 <4.0.0'
@@ -19,7 +19,7 @@ dependencies:
   permission_handler: ^12.0.1
   device_info_plus: ^12.1.0
   flutter:
-    sdk: flutter
+    sdk: flutt
   flutter_localizations:
     sdk: flutter
   cupertino_icons: ^1.0.8

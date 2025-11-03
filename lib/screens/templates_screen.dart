@@ -5,9 +5,64 @@ import 'package:pulpitflow/models/template.dart';
 import 'package:pulpitflow/models/khutbah.dart';
 import 'package:pulpitflow/screens/rich_editor_screen.dart';
 import 'package:pulpitflow/services/html_to_quill_converter_simple.dart';
+import 'package:pulpitflow/services/template_service.dart';
 
-class TemplatesScreen extends StatelessWidget {
+class TemplatesScreen extends StatefulWidget {
   const TemplatesScreen({super.key});
+
+  @override
+  State<TemplatesScreen> createState() => _TemplatesScreenState();
+}
+
+class _TemplatesScreenState extends State<TemplatesScreen> {
+  List<Template> _templates = [];
+  bool _isLoading = true;
+  String? _errorMessage;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadTemplates();
+  }
+
+  Future<void> _loadTemplates() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      // Start with default templates
+      final templates = List<Template>.from(DefaultTemplates.all);
+
+      // Try to fetch templates from Supabase
+      try {
+        final supabaseTemplates = await TemplateService.getAllTemplates();
+
+        // Add Supabase templates that aren't already in the default list
+        for (final template in supabaseTemplates) {
+          if (!templates.any((t) => t.id == template.id)) {
+            templates.add(template);
+          }
+        }
+      } catch (supabaseError) {
+        // If Supabase fetch fails, just continue with default templates
+        print('Warning: Could not fetch Supabase templates: $supabaseError');
+      }
+
+      setState(() {
+        _templates = templates;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _errorMessage = 'Failed to load templates: $e';
+        _isLoading = false;
+        // Fallback to default templates on error
+        _templates = DefaultTemplates.all;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,17 +83,52 @@ class TemplatesScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-            Expanded(
-              child: ListView.builder(
-                itemCount: DefaultTemplates.all.length,
-                itemBuilder: (context, index) {
-                  final template = DefaultTemplates.all[index];
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 16),
-                    child: _buildTemplateCard(context, template),
-                  );
-                },
+            if (_errorMessage != null)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.orange.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.orange.withValues(alpha: 0.3)),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.warning_amber_rounded, color: Colors.orange, size: 20),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          _errorMessage!,
+                          style: TextStyle(color: Colors.orange.shade700, fontSize: 12),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
+            Expanded(
+              child: _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : _templates.isEmpty
+                      ? Center(
+                          child: Text(
+                            'No templates available',
+                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
+                            ),
+                          ),
+                        )
+                      : ListView.builder(
+                          itemCount: _templates.length,
+                          itemBuilder: (context, index) {
+                            final template = _templates[index];
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 16),
+                              child: _buildTemplateCard(context, template),
+                            );
+                          },
+                        ),
             ),
           ],
         ),

@@ -79,6 +79,12 @@ android/key.properties
 android/app/upload-keystore.jks
 ios/Runner/GoogleService-Info.plist
 
+# iOS Code Signing (NEVER commit these)
+*.mobileprovision
+*.p12
+*.cer
+*.certSigningRequest
+
 # Environment files
 .env
 .env.local

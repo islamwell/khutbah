@@ -78,6 +78,27 @@ class SupabaseAuth {
     }
   }
 
+  /// Delete current user account and all associated data
+  /// This will permanently delete the user from Supabase Auth
+  /// and cascade delete all their data from related tables
+  static Future<void> deleteAccount() async {
+    try {
+      final user = currentUser;
+      if (user == null) {
+        throw 'No user is currently logged in';
+      }
+
+      // Call the RPC function to delete the user
+      // This requires a database function to be set up (see migration)
+      await SupabaseConfig.client.rpc('delete_user_account');
+
+      // Sign out after deletion
+      await signOut();
+    } catch (e) {
+      throw _handleAuthError(e);
+    }
+  }
+
   /// Get current user
   static User? get currentUser => SupabaseConfig.auth.currentUser;
 

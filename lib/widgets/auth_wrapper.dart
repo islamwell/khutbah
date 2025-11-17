@@ -256,6 +256,16 @@ class HomeScreenWithAuth extends StatelessWidget {
             },
             child: const Text('Reset Password'),
           ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _deleteAccount(context);
+            },
+            style: TextButton.styleFrom(
+              foregroundColor: Theme.of(context).colorScheme.error,
+            ),
+            child: const Text('Delete Account'),
+          ),
         ],
       ),
     );
@@ -267,7 +277,7 @@ class HomeScreenWithAuth extends StatelessWidget {
 
     try {
       await SupabaseAuth.resetPassword(user!.email!);
-      
+
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -284,6 +294,84 @@ class HomeScreenWithAuth extends StatelessWidget {
             backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
+      }
+    }
+  }
+
+  Future<void> _deleteAccount(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Account'),
+        content: const Text(
+          'Are you sure you want to delete your account?\n\n'
+          'This will permanently delete:\n'
+          '• Your account and profile\n'
+          '• All your khutbahs\n'
+          '• All your saved content\n'
+          '• All your templates\n\n'
+          'This action cannot be undone.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: TextButton.styleFrom(
+              foregroundColor: Theme.of(context).colorScheme.error,
+            ),
+            child: const Text('Delete Account'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      // Show loading indicator
+      if (context.mounted) {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => const Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
+      }
+
+      try {
+        await SupabaseAuth.deleteAccount();
+
+        // Close loading indicator
+        if (context.mounted) {
+          Navigator.pop(context);
+        }
+
+        // Show success message
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Text('Account deleted successfully'),
+              backgroundColor: Theme.of(context).colorScheme.primary,
+            ),
+          );
+        }
+      } catch (e) {
+        // Close loading indicator
+        if (context.mounted) {
+          Navigator.pop(context);
+        }
+
+        // Show error message
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Failed to delete account: $e'),
+              backgroundColor: Theme.of(context).colorScheme.error,
+            ),
+          );
+        }
       }
     }
   }

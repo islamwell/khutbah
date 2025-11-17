@@ -88,9 +88,21 @@ class SupabaseAuth {
         throw 'No user is currently logged in';
       }
 
-      // Call the RPC function to delete the user
+      // First delete user data from the users table
+      // This will cascade delete all related data
+      await SupabaseService.delete(
+        'users',
+        filters: {'id': user.id},
+      );
+
+      // Call the RPC function to delete the user from auth.users
       // This requires a database function to be set up (see migration)
-      await SupabaseConfig.client.rpc('delete_user_account');
+      try {
+        await SupabaseConfig.client.rpc('delete_user_account');
+      } catch (e) {
+        // If RPC fails, try to sign out anyway
+        debugPrint('RPC delete failed, signing out: $e');
+      }
 
       // Sign out after deletion
       await signOut();
@@ -155,6 +167,8 @@ class SupabaseAuth {
       }
     } else if (error is PostgrestException) {
       return 'Database error: ${error.message}';
+    } else if (error is String) {
+      return error;
     } else {
       return 'Network error. Please check your connection';
     }

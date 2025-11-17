@@ -2,6 +2,14 @@
 
 This document explains how to set up the delete account feature in your Supabase project.
 
+## ⚠️ IMPORTANT: SQL Function Setup Required
+
+**The SQL function MUST be set up in Supabase for the delete account feature to fully work.** Without it:
+- ✅ User data (khutbahs, templates, etc.) will be deleted
+- ❌ The auth user account will NOT be deleted (user could still log in with no data)
+
+Follow the setup steps below to enable complete account deletion.
+
 ## Overview
 
 The delete account feature allows users to permanently delete their account and all associated data from the app. This includes:
@@ -74,10 +82,15 @@ The database is already configured with `ON DELETE CASCADE` constraints. When a 
 
 ## Security
 
+This implementation uses a **database function with SECURITY DEFINER**, which is the recommended secure approach for client-side user deletion in Supabase (alternative to Edge Functions).
+
+Key security features:
 - The `delete_user_account()` function uses `SECURITY DEFINER` to run with elevated privileges
 - It verifies the user is authenticated before allowing deletion
 - Only the authenticated user can delete their own account (users cannot delete other accounts)
 - The function uses `auth.uid()` to ensure users can only delete themselves
+- No SERVICE_ROLE key is exposed to the client application
+- Follows Supabase best practices for 2024
 
 ## Testing
 

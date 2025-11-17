@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Al-Minbar</string>
+	<string>NQ Khutbah Companion</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -13,7 +13,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>Al-Minbar</string>
+	<string>NQ Khutbah Companion</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -46,8 +46,8 @@
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Al-Minbar needs access to your photo library to allow you to select and import images for your khutbah content and presentations.</string>
+	<string>NQ Khutbah Companion needs access to your photo library to allow you to select and import images for your khutbah content and presentations.</string>
 	<key>NSDocumentsFolderUsageDescription</key>
-	<string>Al-Minbar needs access to your documents folder to save and import khutbah files, PDFs, and other content.</string>
+	<string>NQ Khutbah Companion needs access to your documents folder to save and import khutbah files, PDFs, and other content.</string>
 </dict>
 </plist>

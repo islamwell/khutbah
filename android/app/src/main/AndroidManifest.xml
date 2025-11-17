@@ -19,7 +19,7 @@
     <!-- Required for importing audio content for khutbah preparation -->
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
     <application
-        android:label="Al-Minbar"
+        android:label="NQ Khutbah Companion"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:enableOnBackInvokedCallback="true"

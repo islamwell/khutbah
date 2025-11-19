@@ -659,49 +659,57 @@ class _SettingsModalState extends State<_SettingsModal> {
           ),
           TextButton(
             onPressed: () async {
-              Navigator.pop(context); // Close confirmation dialog
+              final navigator = Navigator.of(context);
+              final scaffoldMessenger = ScaffoldMessenger.of(context);
+              final theme = Theme.of(context);
+
+              navigator.pop(); // Close confirmation dialog
 
               // Show loading indicator
               showDialog(
                 context: context,
                 barrierDismissible: false,
-                builder: (context) => const Center(
-                  child: CircularProgressIndicator(),
+                builder: (context) => const AlertDialog(
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CircularProgressIndicator(),
+                      SizedBox(height: 16),
+                      Text('Deleting account...'),
+                    ],
+                  ),
                 ),
               );
 
               try {
+                debugPrint('Starting account deletion...');
                 await SupabaseAuth.deleteAccount();
+                debugPrint('Account deletion completed');
 
                 // Close loading indicator
-                if (context.mounted) {
-                  Navigator.pop(context);
-                }
+                navigator.pop();
 
                 // Show success message
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: const Text('Account deleted successfully'),
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                    ),
-                  );
-                }
+                scaffoldMessenger.showSnackBar(
+                  SnackBar(
+                    content: const Text('Account deleted successfully'),
+                    backgroundColor: theme.colorScheme.primary,
+                  ),
+                );
               } catch (e) {
+                debugPrint('Account deletion failed: $e');
+
                 // Close loading indicator
-                if (context.mounted) {
-                  Navigator.pop(context);
-                }
+                navigator.pop();
 
                 // Show error message
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Failed to delete account: $e'),
-                      backgroundColor: Theme.of(context).colorScheme.error,
-                    ),
-                  );
-                }
+                scaffoldMessenger.showSnackBar(
+                  SnackBar(
+                    content: Text('Failed to delete account: $e'),
+                    backgroundColor: theme.colorScheme.error,
+                    duration: const Duration(seconds: 5),
+                  ),
+                );
               }
             },
             style: TextButton.styleFrom(

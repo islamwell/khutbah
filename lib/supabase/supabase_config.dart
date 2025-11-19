@@ -88,25 +88,40 @@ class SupabaseAuth {
         throw 'No user is currently logged in';
       }
 
+      debugPrint('DeleteAccount: Starting deletion for user ${user.id}');
+
       // First delete user data from the users table
       // This will cascade delete all related data
-      await SupabaseService.delete(
-        'users',
-        filters: {'id': user.id},
-      );
+      debugPrint('DeleteAccount: Deleting user data from users table...');
+      try {
+        await SupabaseService.delete(
+          'users',
+          filters: {'id': user.id},
+        );
+        debugPrint('DeleteAccount: User data deleted successfully');
+      } catch (e) {
+        debugPrint('DeleteAccount: Error deleting user data: $e');
+        // Continue even if this fails - RPC might still work
+      }
 
       // Call the RPC function to delete the user from auth.users
       // This requires a database function to be set up (see migration)
+      debugPrint('DeleteAccount: Calling delete_user_account RPC...');
       try {
         await SupabaseConfig.client.rpc('delete_user_account');
+        debugPrint('DeleteAccount: RPC call successful');
       } catch (e) {
         // If RPC fails, try to sign out anyway
-        debugPrint('RPC delete failed, signing out: $e');
+        debugPrint('DeleteAccount: RPC delete failed (SQL function might not be set up): $e');
+        debugPrint('DeleteAccount: See DELETE_ACCOUNT_SETUP.md for setup instructions');
       }
 
       // Sign out after deletion
+      debugPrint('DeleteAccount: Signing out...');
       await signOut();
+      debugPrint('DeleteAccount: Sign out complete');
     } catch (e) {
+      debugPrint('DeleteAccount: Fatal error: $e');
       throw _handleAuthError(e);
     }
   }

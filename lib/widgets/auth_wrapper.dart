@@ -242,6 +242,10 @@ class HomeScreenWithAuth extends StatelessWidget {
             Text('User ID: ${user?.id ?? 'Unknown'}'),
             const SizedBox(height: 8),
             Text('Account created: ${user?.createdAt ?? 'Unknown'}'),
+            const SizedBox(height: 16),
+            const Divider(),
+            const SizedBox(height: 8),
+            const Text('Version: 1.1.9', style: TextStyle(color: Colors.grey)),
           ],
         ),
         actions: [

@@ -2,6 +2,12 @@
 
 This document explains how to set up the delete account feature in your Supabase project.
 
+---
+
+**NOTE**: If you're seeing the error `record "new" has no field "updated_at"` when saving khutbahs, see [FIX_KHUTBAHS_TRIGGER.md](FIX_KHUTBAHS_TRIGGER.md) for the solution.
+
+---
+
 ## ⚠️ IMPORTANT: SQL Function Setup Required
 
 **The SQL function MUST be set up in Supabase for the delete account feature to fully work.** Without it:
